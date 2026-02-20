@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = 'Flutter'
-  s.version               = '3.7.1200' # 3.7.12
+  s.version               = '3.27.400' # 3.27.4
   s.summary               = 'A UI toolkit for beautiful and fast apps.'
   s.description           = <<-DESC
 Flutter is Google's UI toolkit for building beautiful, fast apps for mobile, web, desktop, and embedded devices from a single codebase.
@@ -38,8 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 LICENSE
   }
   s.author                = { 'Flutter Dev Team' => 'flutter-dev@googlegroups.com' }
-  s.source                = { :http => 'https://storage.googleapis.com/flutter_infra_release/flutter/1a65d409c7a1438a34d21b60bf30a6fd5db59314/ios-release/artifacts.zip' }
-  s.documentation_url     = 'https://flutter.dev/docs'
-  s.platform              = :ios, '11.0'
+  s.source                = { :http => 'https://storage.googleapis.com/flutter_infra_release/flutter/82bd5b7209295a5b7ff8cae0df96e7870171e3a5/ios-release/artifacts.zip' }
+  s.documentation_url     = 'https://docs.flutter.dev'
+  s.platform              = :ios, '12.0'
   s.vendored_frameworks   = 'Flutter.xcframework'
 end
