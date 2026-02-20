@@ -171,10 +171,6 @@ PODS:
     - "MaterialComponents/TextControls+BaseTextFields"
   - MaterialTextField (1.0.1)
   - MDFInternationalization (3.0.0)
-  - MFSDKHybridKit (2.7.43):
-    - MorfeusVoiceKit
-    - Realm (~> 10)
-  - MorfeusVoiceKit (2.6.0)
   - MPQRCoreSDK (2.0.7)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
@@ -182,9 +178,6 @@ PODS:
   - nanopb/decode (2.30910.0)
   - nanopb/encode (2.30910.0)
   - PromisesObjC (2.4.0)
-  - Realm (10.54.6):
-    - Realm/Headers (= 10.54.6)
-  - Realm/Headers (10.54.6)
   - RecaptchaEnterprise (18.6.0):
     - RecaptchaInterop (~> 100.0.0)
   - RecaptchaInterop (100.0.0)
@@ -212,7 +205,6 @@ DEPENDENCIES:
   - "MaterialComponents/TextControls+OutlinedTextAreas (= 124.2.0)"
   - "MaterialComponents/TextControls+OutlinedTextFields (= 124.2.0)"
   - MaterialTextField (= 1.0.1)
-  - MFSDKHybridKit (= 2.7.43)
   - MPQRCoreSDK (= 2.0.7)
   - RecaptchaEnterprise (= 18.6.0)
   - RiveRuntime (= 6.11.2)
@@ -247,12 +239,9 @@ SPEC REPOS:
     - MaterialComponents
     - MaterialTextField
     - MDFInternationalization
-    - MFSDKHybridKit
-    - MorfeusVoiceKit
     - MPQRCoreSDK
     - nanopb
     - PromisesObjC
-    - Realm
     - RecaptchaEnterprise
     - RecaptchaInterop
     - RiveRuntime
@@ -291,12 +280,9 @@ SPEC CHECKSUMS:
   MaterialComponents: 1a9b2d9d45b1601ae544de85089adc4c464306d4
   MaterialTextField: f1a0786588e4d3610cb9bb62d2adbe9777cebbf9
   MDFInternationalization: d697c55307816222a55685c4ccb1044ffb030c12
-  MFSDKHybridKit: f93d965b4ec7cf48063821ccdc7531825317b2ec
-  MorfeusVoiceKit: a095074fcadc79bd0b63debd6ebd862df5a8abd8
   MPQRCoreSDK: ea95312df244a90b5041cc8bafe089d07cac2bd2
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  Realm: b1b3bc68162fa242132eb7eefbf91d7c40f36a85
   RecaptchaEnterprise: 336a5178eb484cd049b2b04bbe1ca1d60fff1227
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RiveRuntime: 850632d7c20d6683babd9dafb36bcee20faf118e
@@ -304,6 +290,6 @@ SPEC CHECKSUMS:
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   SwiftyJSON: f5b1bf1cd8dd53cd25887ac0eabcfd92301c6a5a
 
-PODFILE CHECKSUM: 4e49fd5f1ad0cc999908a9a8c3f6c36e55f5edc8
+PODFILE CHECKSUM: 2d0ac03f0621919beb6bb58ca322e68b79ef62e0
 
 COCOAPODS: 1.16.2

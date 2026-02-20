@@ -29,7 +29,7 @@ target 'Appcircle' do
   pod 'AppDynamicsAgent', '2024.12.0'
   pod 'JOSESwift', '3.0.0'
   pod 'AppsFlyerFramework', '6.16.0'
-  pod 'MFSDKHybridKit', '2.7.43'
+#  pod 'MFSDKHybridKit', '2.7.43'
   source 'https://github.com/CocoaPods/Specs.git'
   pod 'lottie-ios', '4.5.2'
   pod 'RiveRuntime','6.11.2'
