@@ -35,7 +35,7 @@ target 'Appcircle' do
   pod 'AppDynamicsAgent'
   pod 'AppsFlyerFramework',
     :git => 'https://github.com/AppsFlyerSDK/AppsFlyerFramework'
-  # pod 'MFSDKHybridKit', '2.7.43'
+  pod 'MFSDKHybridKit', '2.7.43'
   source 'https://github.com/CocoaPods/Specs.git'
   pod 'lottie-ios', '3.5.0'
   
