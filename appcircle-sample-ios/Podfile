@@ -15,7 +15,7 @@ target 'Appcircle' do
   use_frameworks!
   shared_pods
   
-  pod 'GoogleMaps', '6.2.1'
+  pod 'GoogleMaps', '8.0'
   pod 'SwiftyGif', '5.4.5'
   pod 'SDWebImage', '5.10.0'
   pod 'Firebase/Core', '10.29.0'
