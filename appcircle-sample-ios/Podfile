@@ -58,6 +58,9 @@ target 'Appcircle' do
         end
       end
     end
+installer.pods_project.build_configurations.each do |config|
+    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+  end
     
     bitcode_strip_path = `xcrun --find bitcode_strip`.chop!
     
