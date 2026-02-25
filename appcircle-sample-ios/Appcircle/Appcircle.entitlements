@@ -17,8 +17,6 @@
 		<string>TAG</string>
 		<string>NDEF</string>
 	</array>
-	<key>com.apple.developer.payment-pass-provisioning</key>
-	<false/>
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.fab.PersonalBanking</string>
