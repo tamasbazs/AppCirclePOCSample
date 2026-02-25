@@ -6,20 +6,20 @@
 //
 
 import SwiftUI
-import FizzBuzzKit
+//import FizzBuzzKit
 import Flutter
 
-struct FizzBuzzView: View {
-    var number: Int
-    let fbkit = FizzBuzzKit()
-    var body: some View {
-        HStack {
-            Text("Result: ")
-            Text(fbkit.handle(number: number))
-                .accessibilityIdentifier("result")
-        }
-    }
-}
+//struct FizzBuzzView: View {
+//    var number: Int
+//    let fbkit = FizzBuzzKit()
+//    var body: some View {
+//        HStack {
+//            Text("Result: ")
+//            Text(fbkit.handle(number: number))
+//                .accessibilityIdentifier("result")
+//        }
+//    }
+//}
 
 struct ContentView: View {
     @State var numberString: String = ""
@@ -34,7 +34,7 @@ struct ContentView: View {
             TextField(text: $numberString, prompt: Text("Enter a number")) {
                 Text("Number")
             }
-            FizzBuzzView(number: Int(numberString) ?? 0)
+//            FizzBuzzView(number: Int(numberString) ?? 0)
             
             Button("Show Flutter!") {
                 openFlutterApp()

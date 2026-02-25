@@ -117,5 +117,5 @@ install_xcframework() {
   echo "Copied $source to $destination"
 }
 
-install_xcframework "${PODS_ROOT}/AppDynamicsAgent/mobile-ios-2023.8.0.4197/iOSAgent-2023.8.0/ADEUMInstrumentation.xcframework" "AppDynamicsAgent" "framework" "ios-arm64_arm64e" "ios-arm64_x86_64-simulator"
+install_xcframework "${PODS_ROOT}/AppDynamicsAgent/mobile-ios-2023.12.1.4282/iOSAgent-2023.12.1/ADEUMInstrumentation.xcframework" "AppDynamicsAgent" "framework" "ios-arm64_arm64e" "ios-arm64_x86_64-simulator"
 

@@ -144,16 +144,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>PPBlinkID.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PagingMenuController.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods-Appcircle-AppcircleUITests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -174,17 +164,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Realm-realm_objc_privacy.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Realm.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>SDWebImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SwiftAlgorithms.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

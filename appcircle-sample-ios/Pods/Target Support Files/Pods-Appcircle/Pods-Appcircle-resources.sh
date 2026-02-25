@@ -97,8 +97,7 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.xcframework/ios-arm64/GoogleMaps.framework/Resources/GoogleMaps.bundle"
-  install_resource "${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.xcframework/ios-arm64_x86_64-simulator/GoogleMaps.framework/Resources/GoogleMaps.bundle"
+  install_resource "${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle"
   install_resource "${PODS_ROOT}/GoogleTagManager/Frameworks/GoogleTagManager.xcframework/Resources/TagManagerResources.bundle"
   install_resource "${PODS_ROOT}/MFSDKHybridKit/MFSDKMessagingKit.framework/MFSDKMessagingKit.momd"
   install_resource "${PODS_ROOT}/MFSDKHybridKit/MFSDKMessagingKit.framework/MFSDKMessagingKit.momd/MFSDKMessagingKit.mom"
@@ -106,8 +105,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/MFSDKHybridKit/MFSDKMessagingKit.framework/MFLanguages.json"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.xcframework/ios-arm64/GoogleMaps.framework/Resources/GoogleMaps.bundle"
-  install_resource "${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.xcframework/ios-arm64_x86_64-simulator/GoogleMaps.framework/Resources/GoogleMaps.bundle"
+  install_resource "${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle"
   install_resource "${PODS_ROOT}/GoogleTagManager/Frameworks/GoogleTagManager.xcframework/Resources/TagManagerResources.bundle"
   install_resource "${PODS_ROOT}/MFSDKHybridKit/MFSDKMessagingKit.framework/MFSDKMessagingKit.momd"
   install_resource "${PODS_ROOT}/MFSDKHybridKit/MFSDKMessagingKit.framework/MFSDKMessagingKit.momd/MFSDKMessagingKit.mom"

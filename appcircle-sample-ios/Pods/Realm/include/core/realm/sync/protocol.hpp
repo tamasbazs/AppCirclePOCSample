@@ -7,6 +7,7 @@
 #include <realm/error_codes.h>
 #include <realm/mixed.hpp>
 #include <realm/replication.hpp>
+#include <realm/util/tagged_bool.hpp>
 
 
 // NOTE: The protocol specification is in `/doc/protocol.md`
@@ -24,15 +25,15 @@ namespace sync {
 //
 //   3 Support for Mixed, TypeLinks, Set, and Dictionary columns.
 //
-//   4 Error messaging format accepts a flexible JSON field in 'json_error'.
+//   4 Error messaging format accepts a flexible JSON field in JSON_ERROR.
 //     JSONErrorMessage.IsClientReset controls recovery mode.
 //
 //   5 Introduces compensating write errors.
 //
 //   6 Support for asymmetric tables.
 //
-//   7 Client takes the 'action' specified in the 'json_error' messages received
-//     from server. Client sends 'json_error' messages to the server.
+//   7 Client takes the 'action' specified in the JSON_ERROR messages received
+//     from server. Client sends JSON_ERROR messages to the server.
 //
 //   8 Websocket http errors are now sent as websocket close codes
 //     FLX sync BIND message can include JSON data in place of server path string
@@ -43,6 +44,15 @@ namespace sync {
 //     realms - this informs the server to not send the schema before sending the
 //     migrate to FLX server action
 //
+//   10 Update BIND message to send information to the server about the reason a
+//      synchronization session is used for; add support for server log messages
+//
+//   11 Support for FLX schema migrations
+//      Update BIND message to send information to the server about the schema
+//      version a synchronized realm is opened with
+//      Update JSON_ERROR message to read the previous schema version sent by
+//      the server
+//
 //  XX Changes:
 //     - TBD
 //
@@ -50,7 +60,7 @@ constexpr int get_current_protocol_version() noexcept
 {
     // Also update the current protocol version test in flx_sync.cpp when
     // updating this value
-    return 9;
+    return 11;
 }
 
 constexpr std::string_view get_pbs_websocket_protocol_prefix() noexcept
@@ -247,6 +257,9 @@ struct ResumptionDelayInfo {
     int delay_jitter_divisor = 4;
 };
 
+class IsFatalTag {};
+using IsFatal = util::TaggedBool<class IsFatalTag>;
+
 struct ProtocolErrorInfo {
     enum class Action {
         NoAction,
@@ -258,14 +271,20 @@ struct ProtocolErrorInfo {
         ClientReset,
         ClientResetNoRecovery,
         MigrateToFLX,
-        RevertToPBS
+        RevertToPBS,
+        // The RefreshUser/RefreshLocation/LogOutUser actions are currently generated internally when the
+        // sync websocket is closed with specific error codes.
+        RefreshUser,
+        RefreshLocation,
+        LogOutUser,
+        MigrateSchema,
     };
 
     ProtocolErrorInfo() = default;
-    ProtocolErrorInfo(int error_code, const std::string& msg, bool do_try_again)
+    ProtocolErrorInfo(int error_code, const std::string& msg, IsFatal is_fatal)
         : raw_error_code(error_code)
         , message(msg)
-        , try_again(do_try_again)
+        , is_fatal(is_fatal)
         , client_reset_recovery_is_disabled(false)
         , should_client_reset(util::none)
         , server_requests_action(Action::NoAction)
@@ -273,21 +292,17 @@ struct ProtocolErrorInfo {
     }
     int raw_error_code = 0;
     std::string message;
-    bool try_again = false;
+    IsFatal is_fatal = IsFatal{true};
     bool client_reset_recovery_is_disabled = false;
     std::optional<bool> should_client_reset;
     std::optional<std::string> log_url;
-    version_type compensating_write_server_version = 0;
+    std::optional<version_type> compensating_write_server_version;
     version_type compensating_write_rejected_client_version = 0;
     std::vector<CompensatingWriteErrorInfo> compensating_writes;
     std::optional<ResumptionDelayInfo> resumption_delay_interval;
     Action server_requests_action;
     std::optional<std::string> migration_query_string;
-
-    bool is_fatal() const
-    {
-        return !try_again;
-    }
+    std::optional<uint64_t> previous_schema_version;
 };
 
 
@@ -357,35 +372,20 @@ enum class ProtocolError {
     migrate_to_flx               = RLM_SYNC_ERR_SESSION_MIGRATE_TO_FLX,             // Server migrated from PBS to FLX - migrate client to FLX (BIND)
     bad_progress                 = RLM_SYNC_ERR_SESSION_BAD_PROGRESS,               // Bad progress information (ERROR)
     revert_to_pbs                = RLM_SYNC_ERR_SESSION_REVERT_TO_PBS,              // Server rolled back to PBS after FLX migration - revert FLX client migration (BIND)
+    bad_schema_version           = RLM_SYNC_ERR_SESSION_BAD_SCHEMA_VERSION,         // Client tried to open a session with an invalid schema version (BIND)
+    schema_version_changed       = RLM_SYNC_ERR_SESSION_SCHEMA_VERSION_CHANGED,     // Client opened a session with a new valid schema version - migrate client to use new schema version (BIND)
 
     // clang-format on
 };
+
+Status protocol_error_to_status(ProtocolError raw_error_code, std::string_view msg);
 
 constexpr bool is_session_level_error(ProtocolError);
 
 /// Returns null if the specified protocol error code is not defined by
 /// ProtocolError.
 const char* get_protocol_error_message(int error_code) noexcept;
-
-const std::error_category& protocol_error_category() noexcept;
-
-std::error_code make_error_code(ProtocolError) noexcept;
-
-} // namespace sync
-} // namespace realm
-
-namespace std {
-
-template <>
-struct is_error_code_enum<realm::sync::ProtocolError> {
-    static const bool value = true;
-};
-
-} // namespace std
-
-namespace realm {
-namespace sync {
-
+std::ostream& operator<<(std::ostream&, ProtocolError protocol_error);
 
 // Implementation
 
@@ -445,6 +445,14 @@ inline std::ostream& operator<<(std::ostream& o, ProtocolErrorInfo::Action actio
             return o << "MigrateToFLX";
         case ProtocolErrorInfo::Action::RevertToPBS:
             return o << "RevertToPBS";
+        case ProtocolErrorInfo::Action::RefreshUser:
+            return o << "RefreshUser";
+        case ProtocolErrorInfo::Action::RefreshLocation:
+            return o << "RefreshLocation";
+        case ProtocolErrorInfo::Action::LogOutUser:
+            return o << "LogOutUser";
+        case ProtocolErrorInfo::Action::MigrateSchema:
+            return o << "MigrateSchema";
     }
     return o << "Invalid error action: " << int64_t(action);
 }

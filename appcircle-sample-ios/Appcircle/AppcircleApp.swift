@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct AppcircleApp: App {
+    
+//    var originalBundle = "io.appcircle.dashboard"
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -1,6 +1,6 @@
 CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
 CONFIGURATION_BUILD_DIR = ${PODS_CONFIGURATION_BUILD_DIR}/AppDynamicsAgent
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/AppDynamicsAgent/mobile-ios-2023.8.0.4197/iOSAgent-2023.8.0" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppDynamicsAgent"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/AppDynamicsAgent/mobile-ios-2023.12.1.4282/iOSAgent-2023.12.1" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppDynamicsAgent"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 OTHER_LDFLAGS = $(inherited) -ObjC -l"z" -framework "CoreTelephony" -framework "SystemConfiguration"
 PODS_BUILD_DIR = ${BUILD_DIR}

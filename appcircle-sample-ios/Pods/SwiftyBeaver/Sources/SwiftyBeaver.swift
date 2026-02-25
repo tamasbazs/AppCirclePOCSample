@@ -12,9 +12,9 @@ import Foundation
 open class SwiftyBeaver {
 
     /// version string of framework
-    public static let version = "2.0.0"  // UPDATE ON RELEASE!
+    public static let version = "1.9.4"  // UPDATE ON RELEASE!
     /// build number of framework
-    public static let build = 2000 // version 1.6.2 -> 1620, UPDATE ON RELEASE!
+    public static let build = 1950 // version 1.6.2 -> 1620, UPDATE ON RELEASE!
 
     public enum Level: Int {
         case verbose = 0
@@ -26,52 +26,41 @@ open class SwiftyBeaver {
 
     // a set of active destinations
     public private(set) static var destinations = Set<BaseDestination>()
-    
-    /// A private queue for synchronizing access to `destinations`.
-    /// Read accesses are done concurrently.
-    /// Write accesses are done with a barrier, ensuring only 1 operation is ran at that time.
-    private static let queue = DispatchQueue(label: "destination queue", attributes: .concurrent)
 
     // MARK: Destination Handling
 
     /// returns boolean about success
     @discardableResult
     open class func addDestination(_ destination: BaseDestination) -> Bool {
-        return queue.sync(flags: DispatchWorkItemFlags.barrier) {
-            if destinations.contains(destination) {
-                return false
-            }
-            destinations.insert(destination)
-            return true
+        if destinations.contains(destination) {
+            return false
         }
+        destinations.insert(destination)
+        return true
     }
 
     /// returns boolean about success
     @discardableResult
     open class func removeDestination(_ destination: BaseDestination) -> Bool {
-        return queue.sync(flags: DispatchWorkItemFlags.barrier) {
-            if destinations.contains(destination) == false {
-                return false
-            }
-            destinations.remove(destination)
-            return true
+        if destinations.contains(destination) == false {
+            return false
         }
+        destinations.remove(destination)
+        return true
     }
 
     /// if you need to start fresh
     open class func removeAllDestinations() {
-        queue.sync(flags: DispatchWorkItemFlags.barrier) {
-            destinations.removeAll()
-        }
+        destinations.removeAll()
     }
 
     /// returns the amount of destinations
     open class func countDestinations() -> Int {
-        return queue.sync { destinations.count }
+        return destinations.count
     }
 
     /// returns the current thread name
-    open class func threadName() -> String {
+    class func threadName() -> String {
 
         #if os(Linux)
             // on 9/30/2016 not yet implemented in server-side Swift:
@@ -91,8 +80,8 @@ open class SwiftyBeaver {
     // MARK: Levels
 
     /// log something generally unimportant (lowest priority)
-    open class func verbose(_ message: @autoclosure () -> Any,
-        file: String = #file, function: String = #function, line: Int = #line, context: Any? = nil) {
+    open class func verbose(_ message: @autoclosure () -> Any, _
+        file: String = #file, _ function: String = #function, line: Int = #line, context: Any? = nil) {
         #if swift(>=5)
         custom(level: .verbose, message: message(), file: file, function: function, line: line, context: context)
         #else
@@ -101,8 +90,8 @@ open class SwiftyBeaver {
     }
 
     /// log something which help during debugging (low priority)
-    open class func debug(_ message: @autoclosure () -> Any,
-        file: String = #file, function: String = #function, line: Int = #line, context: Any? = nil) {
+    open class func debug(_ message: @autoclosure () -> Any, _
+        file: String = #file, _ function: String = #function, line: Int = #line, context: Any? = nil) {
         #if swift(>=5)
         custom(level: .debug, message: message(), file: file, function: function, line: line, context: context)
         #else
@@ -111,8 +100,8 @@ open class SwiftyBeaver {
     }
 
     /// log something which you are really interested but which is not an issue or error (normal priority)
-    open class func info(_ message: @autoclosure () -> Any,
-        file: String = #file, function: String = #function, line: Int = #line, context: Any? = nil) {
+    open class func info(_ message: @autoclosure () -> Any, _
+        file: String = #file, _ function: String = #function, line: Int = #line, context: Any? = nil) {
         #if swift(>=5)
         custom(level: .info, message: message(), file: file, function: function, line: line, context: context)
         #else
@@ -121,8 +110,8 @@ open class SwiftyBeaver {
     }
 
     /// log something which may cause big trouble soon (high priority)
-    open class func warning(_ message: @autoclosure () -> Any,
-        file: String = #file, function: String = #function, line: Int = #line, context: Any? = nil) {
+    open class func warning(_ message: @autoclosure () -> Any, _
+        file: String = #file, _ function: String = #function, line: Int = #line, context: Any? = nil) {
         #if swift(>=5)
         custom(level: .warning, message: message(), file: file, function: function, line: line, context: context)
         #else
@@ -131,8 +120,8 @@ open class SwiftyBeaver {
     }
 
     /// log something which will keep you awake at night (highest priority)
-    open class func error(_ message: @autoclosure () -> Any,
-        file: String = #file, function: String = #function, line: Int = #line, context: Any? = nil) {
+    open class func error(_ message: @autoclosure () -> Any, _
+        file: String = #file, _ function: String = #function, line: Int = #line, context: Any? = nil) {
         #if swift(>=5)
         custom(level: .error, message: message(), file: file, function: function, line: line, context: context)
         #else
@@ -156,7 +145,6 @@ open class SwiftyBeaver {
     class func dispatch_send(level: SwiftyBeaver.Level, message: @autoclosure () -> Any,
         thread: String, file: String, function: String, line: Int, context: Any?) {
         var resolvedMessage: String?
-        let destinations = queue.sync { self.destinations }
         for dest in destinations {
 
             guard let queue = dest.queue else {
@@ -182,30 +170,30 @@ open class SwiftyBeaver {
         }
     }
 
-    /// flush all destinations to make sure all logging messages have been written out
-    /// returns after all messages flushed or timeout seconds
-    /// returns: true if all messages flushed, false if timeout or error occurred
+    /**
+     DEPRECATED & NEEDS COMPLETE REWRITE DUE TO SWIFT 3 AND GENERAL INCORRECT LOGIC
+     Flush all destinations to make sure all logging messages have been written out
+     Returns after all messages flushed or timeout seconds
+
+     - returns: true if all messages flushed, false if timeout or error occurred
+     */
     public class func flush(secondTimeout: Int64) -> Bool {
-        let grp = DispatchGroup()
-        let destinations = queue.sync { self.destinations }
+
+        /*
+        guard let grp = dispatch_group_create() else { return false }
         for dest in destinations {
-            guard let queue = dest.queue else {
-                continue
-            }
-            grp.enter()
-            if dest.asynchronously {
-                queue.async {
+            if let queue = dest.queue {
+                dispatch_group_enter(grp)
+                queue.asynchronously(execute: {
                     dest.flush()
                     grp.leave()
-                }
-            } else {
-                queue.sync {
-                    dest.flush()
-                    grp.leave()
-                }
+                })
             }
         }
-        return grp.wait(timeout: .now() + .seconds(Int(secondTimeout))) == .success
+        let waitUntil = DispatchTime.now(dispatch_time_t(DISPATCH_TIME_NOW), secondTimeout * 1000000000)
+        return dispatch_group_wait(grp, waitUntil) == 0
+         */
+        return true
     }
 
     /// removes the parameters from a function because it looks weird with a single param
